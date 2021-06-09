@@ -21,6 +21,40 @@ def scrape_info():
     browser.quit()
     return data
 
+def hemispheres(browser):
+    #Scrape to find Mars hemispheres with image link and title
+    url = "https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars"
+    browser.visit(url)
+
+    hemisphere_img_title = []
+
+    links = browser.find_by_css("a.product-item h3")
+
+    for l in range(len(links)):
+
+        hemisphere = {}
+        browser.find_by_css("a.product-item h3")[l].click()
+        imgLink = browser.links.find_by_text('Sample').first
+        hemisphere['img_url'] = imgLink['href']
+        hemisphere['title'] = browser.find_by_css("h2.title").text
+        hemisphere_img_title.append(hemisphere)
+        browser.back()
+
+    return hemisphere_img_title
+
+def featureImage(browser):
+
+    # Find featured Mars image url
+    url = 'https://data-class-jpl-space.s3.amazonaws.com/JPL_Space/index.html'
+    browser.visit(url)
+
+    full_image_elem = browser.find_by_css('a.fancybox-thumbs')
+    # full_image_elem.click()
+    # img = browser.find_by_tag('img')
+    image_url= full_image_elem['href']
+    featured_img_url = f'https://data-class-jpl-space.s3.amazonaws.com/JPL_Space/{image_url}'
+    return featured_img_url
+
 def marsNews(browser):
     # Uses splinter to interact with the html page for Mars News
     url = "https://mars.nasa.gov/news/?page=0&per_page=40&order=publish_date+desc%2Ccreated_at+desc&search=&category=19%2C165%2C184%2C204&blank_scope=Latest"
@@ -42,43 +76,11 @@ def marsNews(browser):
 
     return newsTitle, newsParagraph
 
-def featureImage(browser):
-
-    # Find featured Mars image url
-    url = 'https://data-class-jpl-space.s3.amazonaws.com/JPL_Space/index.html'
-    browser.visit(url)
-
-    full_image_elem = browser.find_by_css('a.showimg').first
-    full_image_elem.click()
-    img = browser.find_by_tag('img')
-    featured_img_url = img['src']
-    return featured_img_url
-
 def marsFacts():
     #Scrape for mars information using pandas
     marsTable = pd.read_html('https://space-facts.com/mars/')[0]
     marsTable.columns = ["Description", "Mars"]
     marsTable.set_index("Description", inplace=True)
-    marsTableHTML = marsTable.to_html()
+    marsTableHTML = marsTable.to_html(classes="table table-stripped")
     return marsTableHTML
 
-def hemispheres(browser):
-    #Scrape to find Mars hemispheres with image link and title
-    url = "https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars"
-    browser.visit(url)
-
-    hemisphere_img_title = []
-
-    links = browser.find_by_css("a.product-item h3")
-
-    for l in range(len(links)):
-        
-        hemisphere = {}
-        browser.find_by_css("a.product-item h3")[l].click()
-        imgLink = browser.links.find_by_text('Sample').first
-        hemisphere['img_url'] = imgLink['href']
-        hemisphere['title'] = browser.find_by_css("h2.title").text
-        hemisphere_img_title.append(hemisphere)
-        browser.back()
-
-    return hemisphere_img_title

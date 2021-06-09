@@ -7,6 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Mission to Mars</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
   <link rel="stylesheet" href="static/style.css">
 </head>
 
@@ -14,39 +15,48 @@
   <div class="container-fluid">
     <div class="jumbotron text-center">
       <h1>Mission to Mars</h1>
-      <p><a class="btn btn-primary btn-lg" href="app.py/scrape" role="button">Scrape New Data</a></p>
+      <p><a class="btn btn-primary btn-lg" href="/scrape" role="button">Scrape New Data</a></p>
     </div>
 
     <div class="news">
         <h3>Latest Mars News</h3>
-        
         <div>
             <h4>{{mars.newsTitle}}</h4>
             <p>{{mars.newsParagraph}}</p>
         </div>
     </div>
-
-    <div class="featured-image">
-        <h3>Featured Mars Image</h3>
-        <img src="{{mars.featured_img_url}}" alt="Featured Mars Image">
-    </div>
-
-    <div class="mars-facts">
-        <h5>Mars Facts</h5>
-        {{mars.marsFacts}}
-    </div>
-
-    <div class="hemispheres">
-        <h3>Mars Hemispheres</h3>
-        {% for hem in mars.hemispheres %}
-            <div>
-                <img src="{{hem.img_url}}" alt="Hemisphere URL">
-                {{hem.title}}
+    
+        <div class="row">
+            <div class="col-md-8">
+                <div class="featured-image">
+                    <h3>Featured Mars Image</h3>
+                    <img src="{{mars.featured_img_url | default('static/images/error.png', true)}}" class="img-responsive" alt="Featured Mars Image">
+                </div>
+            <div class="col-md-4">
+                <div class="row mars-facts">
+                    <h5>Mars Facts</h5>
+                    {{mars.marsFacts | safe}}
+                </div>
             </div>
-        {% end for %}
-    </div>
+            </div>
+        </div>
+    
+    
+        <div class="row">
+            <div class="hemispheres">
+                <h3>Mars Hemispheres</h3>
+                {% for hem in mars.hemispheres %}
+                    <div class="col-md-6">
+                        <img src="{{hem.img_url | default('static/images/error.png', true)}}" alt="Hemisphere URL">
+                        {{hem.title}}
+                    </div>
+                {% endfor %}
+            </div>
+            
+        </div>
+    
   </div>
-  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
 </body>
 
 </html>
