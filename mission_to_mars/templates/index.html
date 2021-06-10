@@ -46,9 +46,11 @@
             <div class="hemispheres">
                 <h3>Mars Hemispheres</h3>
                 {% for hem in mars.hemispheres %}
-                    <div class="col-md-6">
+                    <div class="col-md-6 hem">
                         <img src="{{hem.img_url | default('static/images/error.png', true)}}" alt="Hemisphere URL">
-                        {{hem.title}}
+                        <div class="hemTitle">
+                            {{hem.title}}
+                        </div>
                     </div>
                 {% endfor %}
             </div>

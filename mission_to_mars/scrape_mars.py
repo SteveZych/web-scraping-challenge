@@ -43,17 +43,29 @@ def hemispheres(browser):
     return hemisphere_img_title
 
 def featureImage(browser):
-
-    # Find featured Mars image url
     url = 'https://data-class-jpl-space.s3.amazonaws.com/JPL_Space/index.html'
     browser.visit(url)
 
-    full_image_elem = browser.find_by_css('a.fancybox-thumbs')
-    # full_image_elem.click()
-    # img = browser.find_by_tag('img')
-    image_url= full_image_elem['href']
-    featured_img_url = f'https://data-class-jpl-space.s3.amazonaws.com/JPL_Space/{image_url}'
-    return featured_img_url
+    # Find and click the full image button
+    full_image_elem = browser.find_by_tag('button')[1]
+    full_image_elem.click()
+
+    # Parse the resulting html with soup
+    html = browser.html
+    img_soup = bs(html, 'html.parser')
+
+    # Add try/except for error handling
+    try:
+        # find the relative image url
+        img_url_rel = img_soup.find('img', class_='fancybox-image').get('src')
+
+    except AttributeError:
+        return None
+
+    # Use the base url to create an absolute url
+    img_url = f'https://data-class-jpl-space.s3.amazonaws.com/JPL_Space/{img_url_rel}'
+
+    return img_url
 
 def marsNews(browser):
     # Uses splinter to interact with the html page for Mars News
